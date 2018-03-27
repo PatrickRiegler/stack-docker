@@ -18,7 +18,8 @@ services:
   #   ELASTIC_VERSION=6.0.0-beta1 TAG=6.0.0-beta1-3eab5b40 docker-compose up
   #
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:${TAG}
+    #image: docker.elastic.co/elasticsearch/elasticsearch-platinum:${TAG}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
     container_name: elasticsearch
     environment: ['http.host=0.0.0.0', 'transport.host=127.0.0.1', 'ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
     ports: ['127.0.0.1:9200:9200']
@@ -55,16 +56,16 @@ services:
 #    networks: ['stack']
 #    depends_on: ['elasticsearch']
 #
-#  filebeat:
-#    image: docker.elastic.co/beats/filebeat:${TAG}
-#    container_name: filebeat
-#    command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
-#    # If the host system has logs at "/var/log", mount them at "/mnt/log"
-#    # inside the container, where Filebeat can find them.
-#    # volumes: ['/var/log:/mnt/log:ro']
-#    networks: ['stack']
-#    depends_on: ['elasticsearch', 'setup_filebeat']
-#
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${TAG}
+    container_name: filebeat
+    command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
+    # If the host system has logs at "/var/log", mount them at "/mnt/log"
+    # inside the container, where Filebeat can find them.
+    # volumes: ['/var/log:/mnt/log:ro']
+    networks: ['stack']
+    depends_on: ['elasticsearch', 'setup_filebeat']
+
   heartbeat:
     image: docker.elastic.co/beats/heartbeat:${TAG}
     container_name: heartbeat
@@ -142,15 +143,15 @@ services:
 #    networks: ['stack']
 #    depends_on: ['kibana']
 #
-#  setup_filebeat:
-#    image: docker.elastic.co/beats/filebeat:${TAG}
-#    container_name: setup_filebeat
-#    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
-#    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s filebeat']
-#    environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-#    networks: ['stack']
-#    depends_on: ['kibana']
-#
+  setup_filebeat:
+    image: docker.elastic.co/beats/filebeat:${TAG}
+    container_name: setup_filebeat
+    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
+    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s filebeat']
+    environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
+    networks: ['stack']
+    depends_on: ['kibana']
+
   setup_heartbeat:
     image: docker.elastic.co/beats/heartbeat:${TAG}
     container_name: setup_heartbeat
