@@ -19,12 +19,17 @@ services:
   #
   elasticsearch:
     #image: docker.elastic.co/elasticsearch/elasticsearch-platinum:${TAG}
-    image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
+    #image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
+    image: elasticsearch
     container_name: elasticsearch
     environment: ['http.host=0.0.0.0', 'transport.host=127.0.0.1', 'ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
     ports: ['9200:9200']
     networks: ['stack']
-    command: 'sed -ri "s,Xmx1g,Xmx3g,g" jvm.options && /elasticsearch/bin/elasticsearch'
+    #command: bash -c 'sed -ri "s,Xmx1g,Xmx3g,g" /usr/share/elasticsearch/config/jvm.options && bin/elasticsearch'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${TAG}
@@ -57,25 +62,25 @@ services:
 #    networks: ['stack']
 #    depends_on: ['elasticsearch']
 #
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:${TAG}
-    container_name: filebeat
-    command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
-    # If the host system has logs at "/var/log", mount them at "/mnt/log"
-    # inside the container, where Filebeat can find them.
-    # volumes: ['/var/log:/mnt/log:ro']
-    networks: ['stack']
-    depends_on: ['elasticsearch', 'setup_filebeat']
-    restart: always
-
-  heartbeat:
-    image: docker.elastic.co/beats/heartbeat:${TAG}
-    container_name: heartbeat
-    command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
-    networks: ['stack']
-    depends_on: ['elasticsearch', 'setup_heartbeat']
-    restart: always
-
+#  filebeat:
+#    image: docker.elastic.co/beats/filebeat:${TAG}
+#    container_name: filebeat
+#    command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
+#    # If the host system has logs at "/var/log", mount them at "/mnt/log"
+#    # inside the container, where Filebeat can find them.
+#    # volumes: ['/var/log:/mnt/log:ro']
+#    networks: ['stack']
+#    depends_on: ['elasticsearch', 'setup_filebeat']
+#    restart: always
+#
+#  heartbeat:
+#    image: docker.elastic.co/beats/heartbeat:${TAG}
+#    container_name: heartbeat
+#    command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
+#    networks: ['stack']
+#    depends_on: ['elasticsearch', 'setup_heartbeat']
+#    restart: always
+#
 #  metricbeat:
 #    image: docker.elastic.co/beats/metricbeat:${TAG}
 #    container_name: metricbeat
