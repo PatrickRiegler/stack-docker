@@ -141,7 +141,7 @@ services:
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
     networks: ['stack']
     depends_on: ['elasticsearch']
-    restart: always
+    #restart: always
 
 #  setup_auditbeat:
 #    image: docker.elastic.co/beats/auditbeat:${TAG}
@@ -160,7 +160,7 @@ services:
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
     networks: ['stack']
     depends_on: ['kibana']
-    restart: always
+    #restart: always
 
   setup_heartbeat:
     image: docker.elastic.co/beats/heartbeat:${TAG}
@@ -170,7 +170,7 @@ services:
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
     networks: ['stack']
     depends_on: ['kibana']
-    restart: always
+    #restart: always
 
 #  setup_metricbeat:
 #    image: docker.elastic.co/beats/metricbeat:${TAG}
