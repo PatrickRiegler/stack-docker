@@ -35,6 +35,8 @@ services:
       options:
         gelf-address: udp://${AWSIP}:12201
         tag: "elasticsearch"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
 
 
   kibana:
@@ -244,5 +246,9 @@ services:
 #    environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
 #    networks: ['stack']
 #    depends_on: ['elasticsearch','kibana']
+
+volumes:
+  esdata:
+    driver: local
 
 networks: {stack: {}}
