@@ -82,7 +82,10 @@ services:
   heartbeat:
     image: docker.elastic.co/beats/heartbeat:${TAG}
     container_name: heartbeat
+    extra_hosts:
+      - "vin2cert:${AWSIP}"
     command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
+    volumes: ['./config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro']
     networks: ['stack']
     depends_on: ['elasticsearch', 'setup_heartbeat']
     restart: always
