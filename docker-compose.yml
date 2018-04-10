@@ -113,21 +113,22 @@ services:
         gelf-address: udp://${AWSIP}:12201
         tag: "heartbeat"
 
-#  metricbeat:
-#    image: docker.elastic.co/beats/metricbeat:${TAG}
-#    container_name: metricbeat
-#    # The commented sections below enable Metricbeat to monitor the Docker host,
-#    # rather than the Metricbeat container. It's problematic with Docker for
-#    # Windows, however, since "/proc", "/sys" etc. don't exist on Windows.
-#    # The same likely applies to OSX (needs testing).
-#    # volumes:
-#    #   - /proc:/hostfs/proc:ro
-#    #   - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-#    #   - /:/hostfs:ro
-#    command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}' # -system.hostfs=/hostfs
-#    networks: ['stack']
-#    depends_on: ['elasticsearch', 'setup_metricbeat']
-#
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:${TAG}
+    container_name: metricbeat
+    # The commented sections below enable Metricbeat to monitor the Docker host,
+    # rather than the Metricbeat container. It's problematic with Docker for
+    # Windows, however, since "/proc", "/sys" etc. don't exist on Windows.
+    # The same likely applies to OSX (needs testing).
+    volumes:
+      - ./modules.d:/usr/share/metricbeat/modules.d:ro
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /:/hostfs:ro
+    command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}' -system.hostfs=/hostfs
+    networks: ['stack']
+    depends_on: ['elasticsearch', 'setup_metricbeat']
+
 #  packetbeat:
 #    image: docker.elastic.co/beats/packetbeat:${TAG}
 #    container_name: packetbeat
@@ -219,15 +220,15 @@ services:
         gelf-address: udp://${AWSIP}:12201
         tag: "setup_heartbeat"
 
-#  setup_metricbeat:
-#    image: docker.elastic.co/beats/metricbeat:${TAG}
-#    container_name: setup_metricbeat
-#    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
-#    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s metricbeat']
-#    environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-#    networks: ['stack']
-#    depends_on: ['kibana']
-#
+  setup_metricbeat:
+    image: docker.elastic.co/beats/metricbeat:${TAG}
+    container_name: setup_metricbeat
+    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
+    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s metricbeat']
+    environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
+    networks: ['stack']
+    depends_on: ['kibana']
+
 #  setup_packetbeat:
 #    image: docker.elastic.co/beats/packetbeat:${TAG}
 #    container_name: setup_packetbeat
