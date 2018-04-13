@@ -70,11 +70,11 @@ services:
     links:
       - elasticsearch:elasticsearch
     depends_on: ['elasticsearch', 'setup_logstash']
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://${AWSIP}:12201
-        tag: "logstash"
+#    logging:
+#      driver: gelf
+#      options:
+#        gelf-address: udp://${AWSIP}:12201
+#        tag: "logstash"
 
 #  auditbeat:
 #    image: docker.elastic.co/beats/auditbeat:${TAG}
