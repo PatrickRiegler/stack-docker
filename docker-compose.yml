@@ -95,7 +95,6 @@ services:
 #    # volumes: ['/var/log:/mnt/log:ro']
 #    networks: ['stack']
 #    depends_on: ['elasticsearch', 'setup_filebeat']
-#    restart: always
 #
   heartbeat:
     image: docker.elastic.co/beats/heartbeat:${TAG}
@@ -106,7 +105,6 @@ services:
     volumes: ['./config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro']
     networks: ['stack']
     depends_on: ['elasticsearch', 'setup_heartbeat']
-    restart: always
     logging:
       driver: gelf
       options:
@@ -179,7 +177,6 @@ services:
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
     networks: ['stack']
     depends_on: ['elasticsearch']
-    #restart: always
     logging:
       driver: gelf
       options:
@@ -203,7 +200,6 @@ services:
 #    environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
 #    networks: ['stack']
 #    depends_on: ['kibana']
-#    #restart: always
 #
   setup_heartbeat:
     image: docker.elastic.co/beats/heartbeat:${TAG}
@@ -213,7 +209,6 @@ services:
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
     networks: ['stack']
     depends_on: ['kibana']
-    #restart: always
     logging:
       driver: gelf
       options:
